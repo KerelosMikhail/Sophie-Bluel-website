@@ -288,3 +288,25 @@ footer nav ul {
   background-color: #1d6154;
   color: #fff;
 }
+
+#login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+}
+
+#loginSubForm{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  width: 379px;
+}
+
+#login-email login-password{
+  margin: 10px;
+  
+} 
+
+

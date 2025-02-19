@@ -10,25 +10,7 @@ fetch("http://localhost:5678/api/works")
   .then((data) => {
     data.forEach((work) => {
       // Create a new figure element for each work
-      const figure = document.createElement("figure");
-      figure.classList.add("work");
-      figure.setAttribute("data-category", work.categoryId);
-
-      // Create an image element
-      const img = document.createElement("img");
-      img.src = work.imageUrl;
-      img.alt = work.title;
-
-      // Create a title element
-      const title = document.createElement("h3");
-      title.textContent = work.title;
-
-      // Append image and title to the work element
-      figure.appendChild(img);
-      figure.appendChild(title);
-
-      // Append the work element to the gallery
-      gallery.appendChild(figure);
+      createWork(work);
     });
   })
   .catch((error) => console.error("Error fetching works: ", error));
@@ -60,6 +42,28 @@ fetch("http://localhost:5678/api/categories")
     });
   })
   .catch((error) => console.error("Error fetching categories: ", error));
+
+function createWork(work) {
+  const figure = document.createElement("figure");
+  figure.classList.add("work");
+  figure.setAttribute("data-category", work.categoryId);
+
+  // Create an image element
+  const img = document.createElement("img");
+  img.src = work.imageUrl;
+  img.alt = work.title;
+
+  // Create a title element
+  const title = document.createElement("h3");
+  title.textContent = work.title;
+
+  // Append image and title to the work element
+  figure.appendChild(img);
+  figure.appendChild(title);
+
+  // Append the work element to the gallery
+  gallery.appendChild(figure);
+}
 
 // Function to filter gallery based on category
 function filterGallery(categoryId) {
