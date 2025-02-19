@@ -261,6 +261,12 @@ footer nav ul {
   display: flex;
   justify-content: flex-end;
   margin: 2em;
+  width: 1440px;
+  height: 60px;
+  top: 964px;
+  font-family: work sans;
+  font-size: 14px;
+  font-weight: 300;
 }
 /*
 	Step 1.2: Implementing the Job Filter: Adding Filters to Display Jobs by Category
@@ -289,6 +295,9 @@ footer nav ul {
   color: #fff;
 }
 
+/*
+  Login page
+*/
 #login {
   display: flex;
   flex-direction: column;
@@ -296,7 +305,7 @@ footer nav ul {
   align-content: center;
 }
 
-#loginSubForm{
+#loginSubForm {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -304,9 +313,46 @@ footer nav ul {
   width: 379px;
 }
 
-#login-email login-password{
-  margin: 10px;
-  
-} 
+#login-email,
+#login-password {
+  width: 379px;
+  height: 51px;
+  top: 338px;
+  left: 530px;
+  background: #ffffff;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+  border: none;
+  margin-bottom: 20px;
+}
 
+.form-label {
+  font-family: "Work Sans";
+  font-size: 14px;
+  color: #3d3d3d;
+  line-height: 16.42px;
+  font-weight: 500;
+  align-self: flex-start;
+  margin-bottom: 5px;
+}
 
+#loginSubForm button {
+  width: 126px;
+  height: 35px;
+  background: #1d6154;
+  border-radius: 60px;
+  top: 529px;
+  left: 656px;
+  padding: 9px 38px 9px 38px;
+  gap: 10px;
+  font-family: "Syne";
+  color: #ffffff;
+  line-height: 16.8px;
+  font-weight: 700;
+  text-align: center;
+  margin: 20px auto;
+  white-space: nowrap;
+}
+
+#login-title {
+  margin: 20px auto;
+}
