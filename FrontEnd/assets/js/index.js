@@ -1,6 +1,7 @@
 // DOM elements
 const gallery = document.getElementsByClassName("gallery")[0];
 const categoriesContainer = document.getElementById("categories");
+const navItem = document.getElementById("navItem"); // Needed to update the navigation item from "Log In" to "Log Out"
 
 //Step 1.1: Retrieving Jobs from the Back-End
 // Using fetch to grap the work from API
@@ -88,3 +89,24 @@ function setSelectedButton(selectedButton) {
   });
   selectedButton.classList.add("selected");
 }
+
+//Step 2.2: Authentifying a User part 2
+// Function to update "Log in" navigation item to "Log Out"
+function updateNavItem() {
+  if (navItem) {
+    navItem.textContent = "Log Out";
+    navItem.href = "#";
+    navItem.addEventListener("click", function () {
+      localStorage.removeItem("authToken"); // Remove the authentication token
+      window.location.href = "index.html"; // Redirect to the login page
+    });
+  }
+}
+
+// Check if the user is already logged in and update the nav item accordingly
+document.addEventListener("DOMContentLoaded", function () {
+  const token = localStorage.getItem("authToken");
+  if (token) {
+    updateNavItem();
+  }
+});
