@@ -100,6 +100,36 @@ function updateNavItem() {
       localStorage.removeItem("authToken"); // Remove the authentication token
       window.location.href = "index.html"; // Redirect to the login page
     });
+
+    // Step 3.1: Adding Edit and edit icon for Modal Window
+    // Add the edit icon and Edit text next to "My Projects"
+    const portfolioSection = document.getElementById("portfolio");
+    const editButton = document.createElement("div");
+    editButton.classList.add("edit-button");
+    editButton.style.display = "flex";
+    editButton.style.alignItems = "end";
+    editButton.style.marginLeft = "10px"; // Adjust the margin as needed
+
+    const editIcon = document.createElement("img");
+    editIcon.src = "./assets/icons/pen-to-square-regular.svg";
+    editIcon.alt = "Edit icon";
+    editIcon.style.width = "15.58px";
+    editIcon.style.height = "15.58px";
+    editIcon.style.marginRight = "5px";
+
+    const editText = document.createElement("span");
+    editText.textContent = "Edit";
+    editText.style.fontFamily = "Work Sans";
+    editText.style.fontSize = "14px";
+    editText.style.fontWeight = "400";
+    editText.style.color = "#000000";
+
+    editButton.appendChild(editIcon);
+    editButton.appendChild(editText);
+    editButton.style.marginLeft = "30px";
+    portfolioSection.querySelector("h2").style.display = "flex";
+    portfolioSection.querySelector("h2").style.justifySelf = "center";
+    portfolioSection.querySelector("h2").appendChild(editButton);
   }
 }
 
