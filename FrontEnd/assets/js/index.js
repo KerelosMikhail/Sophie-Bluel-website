@@ -199,14 +199,28 @@ function openModal() {
       const imgContainer = document.createElement("div");
       imgContainer.style.width = "76.86px";
       imgContainer.style.height = "102.57px";
+      imgContainer.style.position = "relative"; // To position the trash icon
       imgContainer.style.overflow = "hidden";
       imgContainer.style.display = "flex";
       imgContainer.style.justifyContent = "center";
       imgContainer.style.alignItems = "center";
+
+      const trashIcon = document.createElement("img");
+      trashIcon.src = "./assets/icons/trash-can-solid.png";
+      trashIcon.alt = "Delete";
+      trashIcon.style.width = "17px";
+      trashIcon.style.height = "17px";
+      trashIcon.style.position = "absolute";
+      trashIcon.style.top = "5px";
+      trashIcon.style.right = "5px";
+      trashIcon.style.cursor = "pointer";
+      trashIcon.style.backgroundColor = "#000000";
+
       imgClone.style.width = "100%";
       imgClone.style.height = "100%";
       imgClone.style.objectFit = "cover";
       imgContainer.appendChild(imgClone);
+      imgContainer.appendChild(trashIcon);
       galleryContainer.appendChild(imgContainer);
     });
 
