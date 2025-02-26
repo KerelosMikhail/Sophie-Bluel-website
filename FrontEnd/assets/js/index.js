@@ -165,13 +165,17 @@ function openModal() {
       const imgContainer = document.createElement("div");
       imgContainer.classList.add("img-container");
 
+      const trashIconContainer = document.createElement("div");
+      trashIconContainer.classList.add("trash-icon-container");
+
       const trashIcon = document.createElement("img");
       trashIcon.src = "./assets/icons/trash-can-solid.png";
       trashIcon.alt = "Delete";
       trashIcon.classList.add("trash-icon");
 
+      trashIconContainer.appendChild(trashIcon);
       imgContainer.appendChild(imgClone);
-      imgContainer.appendChild(trashIcon);
+      imgContainer.appendChild(trashIconContainer);
       galleryContainer.appendChild(imgContainer);
     });
 
@@ -181,6 +185,7 @@ function openModal() {
     const addPhotoButton = document.createElement("button");
     addPhotoButton.textContent = "Add a photo";
     addPhotoButton.classList.add("add-photo-button");
+    addPhotoButton.addEventListener("click", openAddPhotoModal);
 
     modalContent.appendChild(closeButton);
     modalContent.appendChild(modalTitle);
@@ -206,5 +211,117 @@ function closeModal() {
   const modal = document.getElementById("modal");
   if (modal) {
     modal.style.display = "none";
+  }
+}
+
+// Function to open the "Add a photo" modal
+function openAddPhotoModal() {
+  let modal = document.getElementById("modal");
+  if (modal) {
+    modal.style.display = "none";
+  }
+
+  let newModal = document.getElementById("new-modal");
+  if (!newModal) {
+    newModal = document.createElement("div");
+    newModal.id = "new-modal";
+    newModal.classList.add("modal");
+
+    const newModalContent = document.createElement("div");
+    newModalContent.classList.add("new-modal-content");
+
+    const closeButton = document.createElement("span");
+    closeButton.textContent = "×";
+    closeButton.classList.add("close-button");
+    closeButton.addEventListener("click", closeNewModal);
+
+    // New back button container
+    const backButtonContainer = document.createElement("div");
+    backButtonContainer.classList.add("back-button-container");
+
+    const backButton = document.createElement("img");
+    backButton.src = "./assets/icons/arrow-left-solid.svg";
+    backButton.alt = "Back";
+    backButton.classList.add("back-button");
+    backButton.addEventListener("click", function () {
+      closeNewModal();
+      openModal();
+    });
+
+    backButtonContainer.appendChild(backButton);
+
+    const newModalTitle = document.createElement("h2");
+    newModalTitle.textContent = "Add photo";
+    newModalTitle.classList.add("new-modal-title");
+
+    const rectangle = document.createElement("div");
+    rectangle.classList.add("rectangle");
+
+    const imageIcon = document.createElement("img");
+    imageIcon.src = "./assets/icons/image-regular.svg";
+    imageIcon.alt = "Image";
+    imageIcon.classList.add("image-icon");
+
+    const addPhotoBtn = document.createElement("button");
+    addPhotoBtn.textContent = "+ Add photo";
+    addPhotoBtn.classList.add("add-photo-btn");
+
+    const photoInfo = document.createElement("span");
+    photoInfo.textContent = "jpg, png: max 4 MB";
+    photoInfo.classList.add("photo-info");
+
+    rectangle.appendChild(imageIcon);
+    rectangle.appendChild(addPhotoBtn);
+    rectangle.appendChild(photoInfo);
+
+    const titleLabel = document.createElement("label");
+    titleLabel.textContent = "Title";
+    titleLabel.classList.add("form-label");
+
+    const titleInput = document.createElement("input");
+    titleInput.type = "text";
+    titleInput.classList.add("input-box");
+
+    const categoryLabel = document.createElement("label");
+    categoryLabel.textContent = "Category";
+    categoryLabel.classList.add("form-label");
+
+    const categoryDropdown = document.createElement("select");
+    categoryDropdown.classList.add("dropdown");
+
+    const separator = document.createElement("hr");
+    separator.classList.add("separator");
+
+    const confirmButton = document.createElement("button");
+    confirmButton.textContent = "Confirm";
+    confirmButton.classList.add("confirm-button");
+
+    newModalContent.appendChild(closeButton);
+    newModalContent.appendChild(backButtonContainer);
+    newModalContent.appendChild(newModalTitle);
+    newModalContent.appendChild(rectangle);
+    newModalContent.appendChild(titleLabel);
+    newModalContent.appendChild(titleInput);
+    newModalContent.appendChild(categoryLabel);
+    newModalContent.appendChild(categoryDropdown);
+    newModalContent.appendChild(separator);
+    newModalContent.appendChild(confirmButton);
+    newModal.appendChild(newModalContent);
+    document.body.appendChild(newModal);
+  }
+
+  // Close newModal when clicking outside of it
+  newModal.addEventListener("click", function (event) {
+    if (event.target === newModal) {
+      closeNewModal();
+    }
+  });
+}
+
+// Function to close the "Add a photo" modal
+function closeNewModal() {
+  const newModal = document.getElementById("new-modal");
+  if (newModal) {
+    newModal.style.display = "none";
   }
 }
