@@ -102,31 +102,22 @@ function updateNavItem() {
     });
 
     // Step 3.1: Adding Edit and edit icon for Modal Window
-    // Add the edit icon and Edit text next to "My Projects"
+    // Add the edit icon and text next to "My Projects"
     const portfolioSection = document.getElementById("portfolio");
     const editButton = document.createElement("div");
     editButton.classList.add("edit-button");
-    editButton.style.display = "flex";
-    editButton.style.alignItems = "end";
-    editButton.style.marginLeft = "10px"; // Adjust the margin as needed
 
     const editIcon = document.createElement("img");
     editIcon.src = "./assets/icons/pen-to-square-regular.svg";
     editIcon.alt = "Edit icon";
-    editIcon.style.width = "15.58px";
-    editIcon.style.height = "15.58px";
-    editIcon.style.marginRight = "5px";
+    editIcon.classList.add("edit-icon");
 
     const editText = document.createElement("span");
     editText.textContent = "Edit";
-    editText.style.fontFamily = "Work Sans";
-    editText.style.fontSize = "14px";
-    editText.style.fontWeight = "400";
-    editText.style.color = "#000000";
+    editText.classList.add("edit-text");
 
     editButton.appendChild(editIcon);
     editButton.appendChild(editText);
-    editButton.style.marginLeft = "30px";
     portfolioSection.querySelector("h2").style.display = "flex";
     portfolioSection.querySelector("h2").style.justifySelf = "center";
     portfolioSection.querySelector("h2").appendChild(editButton);
@@ -150,99 +141,46 @@ function openModal() {
   if (!modal) {
     modal = document.createElement("div");
     modal.id = "modal";
-    modal.style.position = "fixed";
-    modal.style.top = "0";
-    modal.style.left = "0";
-    modal.style.width = "100%";
-    modal.style.height = "100%";
-    modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-    modal.style.display = "flex";
-    modal.style.justifyContent = "center";
-    modal.style.alignItems = "center";
-    modal.style.zIndex = "2";
+    modal.classList.add("modal");
 
     const modalContent = document.createElement("div");
-    modalContent.style.backgroundColor = "#FFFFFF";
-    modalContent.style.padding = "50px";
-    modalContent.style.borderRadius = "10px";
-    modalContent.style.width = "500px";
-    modalContent.style.position = "relative";
+    modalContent.classList.add("modal-content");
 
     const closeButton = document.createElement("span");
     closeButton.textContent = "×";
-    closeButton.style.position = "absolute";
-    closeButton.style.top = "20px";
-    closeButton.style.right = "20px";
-    closeButton.style.cursor = "pointer";
-    closeButton.style.fontSize = "24px";
+    closeButton.classList.add("close-button");
     closeButton.addEventListener("click", closeModal);
 
     const modalTitle = document.createElement("h2");
     modalTitle.textContent = "Photo Gallery";
-    modalTitle.style.fontFamily = "Work Sans";
-    modalTitle.style.fontSize = "26px";
-    modalTitle.style.fontWeight = "400";
-    modalTitle.style.textAlign = "center";
-    modalTitle.style.marginBottom = "30px";
+    modalTitle.classList.add("modal-title");
 
     const galleryContainer = document.createElement("div");
-    galleryContainer.style.display = "flex";
-    galleryContainer.style.flexWrap = "wrap";
-    galleryContainer.style.justifyContent = "flex-start";
-    galleryContainer.style.marginTop = "20px";
-    galleryContainer.style.gap = "10px";
-    galleryContainer.style.marginLeft = "35px";
+    galleryContainer.classList.add("gallery-container");
 
     const works = document.querySelectorAll(".gallery .work img");
     works.forEach((img) => {
       const imgClone = img.cloneNode(true);
+      imgClone.classList.add("img-clone");
       const imgContainer = document.createElement("div");
-      imgContainer.style.width = "76.86px";
-      imgContainer.style.height = "102.57px";
-      imgContainer.style.position = "relative"; // To position the trash icon
-      imgContainer.style.overflow = "hidden";
-      imgContainer.style.display = "flex";
-      imgContainer.style.justifyContent = "center";
-      imgContainer.style.alignItems = "center";
+      imgContainer.classList.add("img-container");
 
       const trashIcon = document.createElement("img");
       trashIcon.src = "./assets/icons/trash-can-solid.png";
       trashIcon.alt = "Delete";
-      trashIcon.style.width = "17px";
-      trashIcon.style.height = "17px";
-      trashIcon.style.position = "absolute";
-      trashIcon.style.top = "5px";
-      trashIcon.style.right = "5px";
-      trashIcon.style.cursor = "pointer";
-      trashIcon.style.backgroundColor = "#000000";
+      trashIcon.classList.add("trash-icon");
 
-      imgClone.style.width = "100%";
-      imgClone.style.height = "100%";
-      imgClone.style.objectFit = "cover";
       imgContainer.appendChild(imgClone);
       imgContainer.appendChild(trashIcon);
       galleryContainer.appendChild(imgContainer);
     });
 
     const separator = document.createElement("hr");
-    separator.style.width = "429px";
-    separator.style.border = "1px solid #B3B3B3";
-    separator.style.margin = "50px auto";
+    separator.classList.add("separator");
 
     const addPhotoButton = document.createElement("button");
     addPhotoButton.textContent = "Add a photo";
-    addPhotoButton.style.fontFamily = "Syne";
-    addPhotoButton.style.fontSize = "14px";
-    addPhotoButton.style.fontWeight = "700";
-    addPhotoButton.style.color = "#fff";
-    addPhotoButton.style.backgroundColor = "#1d6154";
-    addPhotoButton.style.border = "none";
-    addPhotoButton.style.borderRadius = "60px";
-    addPhotoButton.style.width = "193px";
-    addPhotoButton.style.height = "35px";
-    addPhotoButton.style.margin = "20px auto";
-    addPhotoButton.style.display = "block";
-    addPhotoButton.style.cursor = "pointer";
+    addPhotoButton.classList.add("add-photo-button");
 
     modalContent.appendChild(closeButton);
     modalContent.appendChild(modalTitle);
