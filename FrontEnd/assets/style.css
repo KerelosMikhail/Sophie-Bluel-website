@@ -365,3 +365,236 @@ footer nav ul {
   font-size: 14px;
   margin-top: 20px;
 }
+
+/* Edit button styles */
+.edit-button {
+  display: flex;
+  align-items: end;
+  margin-left: 10px;
+}
+
+.edit-icon {
+  width: 15.58px;
+  height: 15.58px;
+  margin-right: 5px;
+}
+
+.edit-text {
+  font-family: "Work Sans";
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 50px;
+  border-radius: 10px;
+  width: 500px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.modal-title {
+  font-family: "Work Sans";
+  font-size: 26px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.gallery-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 20px;
+  gap: 10px;
+  margin-left: 35px;
+}
+
+.img-container {
+  width: 76.86px;
+  height: 102.57px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* margin: 10px; */
+}
+
+.img-clone {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trash-icon-container {
+  width: 17px;
+  height: 17px;
+  background-color: black;
+  border-radius: 2px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.trash-icon {
+  width: 9px;
+  height: 11px;
+  cursor: pointer;
+}
+
+.separator {
+  width: 429px;
+  border: 1px solid #b3b3b3;
+  margin: 50px auto;
+}
+
+.add-photo-button {
+  font-family: "Syne";
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background-color: #1d6154;
+  border: none;
+  border-radius: 60px;
+  width: 193px;
+  height: 35px;
+  margin: 20px auto;
+  display: block;
+  cursor: pointer;
+}
+
+/* "Add a photo" modal styles */
+.new-modal-content {
+  background-color: #fff;
+  padding: 50px;
+  border-radius: 10px;
+  width: 500px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.new-modal-title {
+  font-family: "Work Sans";
+  font-size: 26px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 30px;
+  align-self: center; 
+}
+
+.rectangle {
+  background-color: #e8f1f6;
+  border-radius: 3px;
+  width: 420px;
+  height: 169px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.rectangle img {
+  width: 68.14px;
+  height: 59.62px;
+  color: #b9c5cc;
+  -webkit-text-fill-color: #b9c5cc;
+}
+
+.add-photo-btn {
+  width: 173px;
+  height: 36px;
+  border-radius: 50px;
+  background-color: #cbd6dc;
+  color: #306685;
+  font-family: "Work Sans";
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.photo-info {
+  font-family: "Work Sans";
+  font-size: 10px;
+  font-weight: 400;
+  color: #000;
+}
+
+.input-box,
+.dropdown {
+  width: 420px;
+  height: 51px;
+  padding: 10px;
+  left: 510px;
+  margin-top: 5px;
+  border: none;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+  background: #ffffff;
+  border-radius: 3px;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.confirm-button {
+  font-family: "Syne";
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background-color: #a7a7a7;
+  border: none;
+  border-radius: 60px;
+  width: 237px;
+  height: 36px;
+  margin: 20px auto;
+  display: block;
+  cursor: pointer;
+}
+
+.back-button-container {
+  width: 21px;
+  height: 21px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-button {
+  width: 21px;
+  height: 18.01px;
+  cursor: pointer;
+}
