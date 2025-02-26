@@ -173,6 +173,11 @@ function openModal() {
       trashIcon.alt = "Delete";
       trashIcon.classList.add("trash-icon");
 
+      trashIcon.addEventListener("click", function () {
+        const workId = img.closest(".work").getAttribute("data-id");
+        showDeleteConfirmation(workId, imgContainer);
+      });
+
       trashIconContainer.appendChild(trashIcon);
       imgContainer.appendChild(imgClone);
       imgContainer.appendChild(trashIconContainer);
