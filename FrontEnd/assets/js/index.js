@@ -325,3 +325,61 @@ function closeNewModal() {
     newModal.style.display = "none";
   }
 }
+
+//Step 3.2: Deleting Existing Jobs
+// Function to show delete confirmation
+function showDeleteConfirmation(workId, imgContainer) {
+  const confirmationModal = document.createElement("div");
+  confirmationModal.classList.add("modal");
+
+  const confirmationContent = document.createElement("div");
+  confirmationContent.classList.add("modal-content");
+
+  const confirmationText = document.createElement("p");
+  confirmationText.textContent = "Are you sure you want to delete this item?";
+
+  const yesButton = document.createElement("button");
+  yesButton.textContent = "Yes";
+  yesButton.classList.add("confirm-button");
+  yesButton.addEventListener("click", function () {
+    deleteWork(workId, imgContainer, confirmationModal);
+  });
+
+  const noButton = document.createElement("button");
+  noButton.textContent = "No";
+  noButton.classList.add("confirm-button");
+  noButton.addEventListener("click", function () {
+    confirmationModal.style.display = "none";
+  });
+
+  confirmationContent.appendChild(confirmationText);
+  confirmationContent.appendChild(yesButton);
+  confirmationContent.appendChild(noButton);
+  confirmationModal.appendChild(confirmationContent);
+  document.body.appendChild(confirmationModal);
+
+  confirmationModal.style.display = "flex";
+
+  // Close confirmationModal when clicking outside of it
+  confirmationModal.addEventListener("click", function (event) {
+    if (event.target === confirmationModal) {
+      confirmationModal.style.display = "none";
+    }
+  });
+}
+
+// Function to delete work
+function deleteWork(workId, imgContainer, confirmationModal) {
+  fetch(`http://localhost:5678/api/works/${workId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        imgContainer.remove();
+        confirmationModal.style.display = "none";
+      } else {
+        console.error("Error deleting work: ", response.status);
+      }
+    })
+    .catch((error) => console.error("Error deleting work: ", error));
+}
