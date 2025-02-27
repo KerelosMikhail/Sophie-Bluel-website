@@ -174,7 +174,7 @@ function openModal() {
       trashIcon.classList.add("trash-icon");
 
       trashIcon.addEventListener("click", function () {
-        const workId = img.closest(".work").getAttribute("data-id");
+        const workId = img.closest(".work").getAttribute("id");
         showDeleteConfirmation(workId, imgContainer);
       });
 
@@ -377,11 +377,19 @@ function showDeleteConfirmation(workId, imgContainer) {
 function deleteWork(workId, imgContainer, confirmationModal) {
   fetch(`http://localhost:5678/api/works/${workId}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`, // Include the token in the request headers
+      "Content-Type": "application/json",
+    },
   })
     .then((response) => {
       if (response.status === 200) {
         imgContainer.remove();
         confirmationModal.style.display = "none";
+      } else if (response.status === 401) {
+        alert("Unauthorized: You do not have permission to delete this item.");
+      } else if (response.status === 500) {
+        alert("Unexpected Behaviour: Please try again later.");
       } else {
         console.error("Error deleting work: ", response.status);
       }
