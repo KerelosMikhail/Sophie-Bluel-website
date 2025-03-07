@@ -330,7 +330,60 @@ function openAddPhotoModal() {
     document.body.appendChild(newModal);
 
     // Call the handleFileInput function
-    handleFileInput(addPhotoBtn, imageIcon, rectangle);
+    const selectedImage = handleFileInput(addPhotoBtn, imageIcon, rectangle);
+    console.log("selectedImage: ", selectedImage);
+    // for 3.3 Change confirmButton style when titleInput has text
+    titleInput.addEventListener("input", function () {
+      if (titleInput.value) {
+        confirmButton.style.backgroundColor = "#1d6154";
+      } else {
+        confirmButton.style.backgroundColor = "#a7a7a7";
+      }
+    });
+
+    // Add event listener to confirm button
+    confirmButton.addEventListener("click", function () {
+      // Check if the form is correctly filled out
+      if (!selectedImage || !titleInput.value || !categoryDropdown.value) {
+        alert("Please fill out all fields and select an image.");
+        return;
+      }
+
+      // Retrieve the userId and auth token from local storage
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("authToken");
+
+      // Create a FormData object to send the data
+      const formData = new FormData();
+      formData.append("imageUrl", selectedImage);
+      formData.append("title", titleInput.value);
+      formData.append("categoryId", categoryDropdown.value);
+      formData.append("userId", userId);
+      formData.append("id", 20); // for testing
+
+      // Make the API fetch POST call to create a new work
+      createWorkAPI(formData, token)
+        .then((response) => {
+          if (response.status === 201) {
+            alert("Work created successfully");
+            response.json().then((newWork) => {
+              // Step 3.4: Processing the API Response to Dynamically Display the New Image from the Modal
+              // Update the DOM with the new work added to the gallery
+              createWork(newWork);
+              closeNewModal();
+            });
+          } else if (response.status === 400) {
+            alert("400 - Bad Request");
+          } else if (response.status === 401) {
+            alert("401 - Unauthorized");
+          } else if (response.status === 500) {
+            alert("500 - Unexpected Error");
+          } else {
+            console.error("Error creating work: ", response.status);
+          }
+        })
+        .catch((error) => console.error("Error creating work: ", error));
+    });
   }
 
   newModal.style.display = "flex";
@@ -475,10 +528,12 @@ function handleFileInput(addPhotoBtn, imageIcon, rectangle) {
   // Append the file input to the document body
   document.body.appendChild(fileInput);
 
-  return selectedImage;
+  return {
+    getSelectedImage: () => selectedImage, // fix for null selectedImage
+  };
 }
 
-// Function to clear the selected image incase of back arrow click, close button click on the "Add a photo" modal
+// Function to clear the selected image incase of back arrow click click on the "Add a photo" modal
 function clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo) {
   imageIcon.src = "./assets/icons/image-regular.svg";
   imageIcon.style.width = "68.14px";
@@ -494,4 +549,15 @@ function clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo) {
   rectangle.appendChild(photoInfo);
 }
 
+// Step 3.3: Sending a New Project to the Back-End via the Modal Form
 
+// Function to create a new work via API
+function createWorkAPI(formData, token) {
+  return fetch("http://localhost:5678/api/works", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+}
