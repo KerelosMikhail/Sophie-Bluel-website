@@ -9,6 +9,7 @@ const navItem = document.getElementById("navItem"); // Needed to update the navi
 fetch("http://localhost:5678/api/works")
   .then((response) => response.json())
   .then((data) => {
+    // console.log("works: ", data);
     data.forEach((work) => {
       // Create a new figure element for each work
       createWork(work);
@@ -48,6 +49,7 @@ function createWork(work) {
   const figure = document.createElement("figure");
   figure.classList.add("work");
   figure.setAttribute("data-category", work.categoryId);
+  figure.setAttribute("id", work.id);
 
   // Create an image element
   const img = document.createElement("img");
@@ -315,6 +317,8 @@ function openAddPhotoModal() {
     document.body.appendChild(newModal);
   }
 
+  newModal.style.display = "flex";
+
   // Close newModal when clicking outside of it
   newModal.addEventListener("click", function (event) {
     if (event.target === newModal) {
@@ -375,16 +379,30 @@ function showDeleteConfirmation(workId, imgContainer) {
 
 // Function to delete work
 function deleteWork(workId, imgContainer, confirmationModal) {
+  // Retrieve the authentication token from local storage
+  const token = localStorage.getItem("authToken");
+
+  if (!token) {
+    alert("Unauthorized: No authentication token found.");
+    return;
+  }
+
   fetch(`http://localhost:5678/api/works/${workId}`, {
     method: "DELETE",
     headers: {
-      Authorization: `Bearer ${token}`, // Include the token in the request headers
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   })
     .then((response) => {
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 204) {
+        // Remove the image container from the modal
         imgContainer.remove();
+        // Remove the corresponding work element from the gallery
+        const workElement = document.getElementById(workId);
+        if (workElement) {
+          workElement.remove();
+        }
         confirmationModal.style.display = "none";
       } else if (response.status === 401) {
         alert("Unauthorized: You do not have permission to delete this item.");
