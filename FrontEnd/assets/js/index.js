@@ -18,11 +18,15 @@ fetch("http://localhost:5678/api/works")
   .catch((error) => console.error("Error fetching works: ", error));
 
 //Step 1.2: Implementing the Job Filter: Adding Filters to Display Jobs by Category
-// Using fetch to grap the categories from API
 
+let categories = []; // To Reuse it in modal window
+
+// Using fetch to grap the categories from API
 fetch("http://localhost:5678/api/categories")
   .then((response) => response.json())
   .then((data) => {
+    categories = data;
+
     // Create "All" button
     const allButton = document.createElement("button");
     allButton.textContent = "All";
@@ -251,6 +255,7 @@ function openAddPhotoModal() {
     backButton.alt = "Back";
     backButton.classList.add("back-button");
     backButton.addEventListener("click", function () {
+      clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo); // Clear the image when the back button is clicked
       closeNewModal();
       openModal();
     });
@@ -283,7 +288,7 @@ function openAddPhotoModal() {
 
     const titleLabel = document.createElement("label");
     titleLabel.textContent = "Title";
-    titleLabel.classList.add("form-label");
+    titleLabel.classList.add("form-label-photo");
 
     const titleInput = document.createElement("input");
     titleInput.type = "text";
@@ -291,10 +296,18 @@ function openAddPhotoModal() {
 
     const categoryLabel = document.createElement("label");
     categoryLabel.textContent = "Category";
-    categoryLabel.classList.add("form-label");
+    categoryLabel.classList.add("form-label-photo");
 
     const categoryDropdown = document.createElement("select");
     categoryDropdown.classList.add("dropdown");
+
+    // Populate the dropdown with categories
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.id;
+      option.textContent = category.name;
+      categoryDropdown.appendChild(option);
+    });
 
     const separator = document.createElement("hr");
     separator.classList.add("separator");
@@ -315,6 +328,9 @@ function openAddPhotoModal() {
     newModalContent.appendChild(confirmButton);
     newModal.appendChild(newModalContent);
     document.body.appendChild(newModal);
+
+    // Call the handleFileInput function
+    handleFileInput(addPhotoBtn, imageIcon, rectangle);
   }
 
   newModal.style.display = "flex";
@@ -414,3 +430,68 @@ function deleteWork(workId, imgContainer, confirmationModal) {
     })
     .catch((error) => console.error("Error deleting work: ", error));
 }
+
+// Function to handle file input and image display for the "Add a photo" modal
+function handleFileInput(addPhotoBtn, imageIcon, rectangle) {
+  // Create a file input element
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/jpeg, image/png";
+  fileInput.style.display = "none";
+
+  let selectedImage = null;
+
+  // Handle file selection
+  fileInput.addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+        alert("File size exceeds 4 MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        imageIcon.src = e.target.result;
+        imageIcon.style.width = "auto";
+        imageIcon.style.height = "100%";
+        imageIcon.style.objectFit = "cover"; // Ensure the image fits within the rectangle
+        selectedImage = file;
+
+        // Remove the existing children of the rectangle and append the imageIcon
+        while (rectangle.firstChild) {
+          rectangle.removeChild(rectangle.firstChild);
+        }
+        rectangle.appendChild(imageIcon);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Trigger file input when addPhotoBtn is clicked
+  addPhotoBtn.addEventListener("click", function () {
+    fileInput.click();
+  });
+
+  // Append the file input to the document body
+  document.body.appendChild(fileInput);
+
+  return selectedImage;
+}
+
+// Function to clear the selected image incase of back arrow click, close button click on the "Add a photo" modal
+function clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo) {
+  imageIcon.src = "./assets/icons/image-regular.svg";
+  imageIcon.style.width = "68.14px";
+  imageIcon.style.height = "59.62px";
+  imageIcon.style.objectFit = "cover";
+
+  // Remove the existing children of the rectangle and append the default imageIcon
+  while (rectangle.firstChild) {
+    rectangle.removeChild(rectangle.firstChild);
+  }
+  rectangle.appendChild(imageIcon);
+  rectangle.appendChild(addPhotoBtn);
+  rectangle.appendChild(photoInfo);
+}
+
+
