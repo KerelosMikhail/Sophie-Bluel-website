@@ -361,27 +361,7 @@ function openAddPhotoModal() {
       formData.append("userId", userId);
 
       // Make the API fetch POST call to create a new work
-      createWorkAPI(formData, token)
-        .then((response) => {
-          if (response.status === 201) {
-            alert("Work created successfully");
-            response.json().then((newWork) => {
-              // Step 3.4: Processing the API Response to Dynamically Display the New Image from the Modal
-              // Update the DOM with the new work added to the gallery
-              createWork(newWork);
-              closeNewModal();
-            });
-          } else if (response.status === 400) {
-            alert("400 - Bad Request");
-          } else if (response.status === 401) {
-            alert("401 - Unauthorized");
-          } else if (response.status === 500) {
-            alert("500 - Unexpected Error");
-          } else {
-            console.error("Error creating work: ", response.status);
-          }
-        })
-        .catch((error) => console.error("Error creating work: ", error));
+      createWorkAPI(formData, token);
     });
   }
 
@@ -565,9 +545,65 @@ function createWorkAPI(formData, token) {
   })
     .then((response) => {
       console.log("Response status:", response.status);
-      return response;
+      if (response.status === 201) {
+        return response.json();
+      } else if (response.status === 400) {
+        alert("400 - Bad Request");
+      } else if (response.status === 401) {
+        alert("401 - Unauthorized");
+      } else if (response.status === 500) {
+        alert("500 - Unexpected Error");
+      } else {
+        throw new Error(`Unexpected status code: ${response.status}`);
+      }
+    })
+    .then((newWork) => {
+      if (newWork) {
+        alert("Work created successfully");
+
+        // Step 3.4: Processing the API Response to Dynamically Display the New Image from the Modal
+        // Update the DOM with the new work added to the gallery
+        createWork(newWork);
+
+        // Update the modal content with the new work
+        updateModalContent(newWork);
+
+        // Close the "Add a photo" modal
+        closeNewModal();
+      }
     })
     .catch((error) => {
       console.error("Error creating work:", error);
     });
+}
+
+// Function to update the modal content with the new work
+function updateModalContent(newWork) {
+  const galleryContainer = document.querySelector(".gallery-container");
+
+  const imgClone = document.createElement("img");
+  imgClone.src = newWork.imageUrl;
+  imgClone.alt = newWork.title;
+  imgClone.classList.add("img-clone");
+
+  const imgContainer = document.createElement("div");
+  imgContainer.classList.add("img-container");
+
+  const trashIconContainer = document.createElement("div");
+  trashIconContainer.classList.add("trash-icon-container");
+
+  const trashIcon = document.createElement("img");
+  trashIcon.src = "./assets/icons/trash-can-solid.png";
+  trashIcon.alt = "Delete";
+  trashIcon.classList.add("trash-icon");
+
+  trashIcon.addEventListener("click", function () {
+    const workId = newWork.id;
+    showDeleteConfirmation(workId, imgContainer);
+  });
+
+  trashIconContainer.appendChild(trashIcon);
+  imgContainer.appendChild(imgClone);
+  imgContainer.appendChild(trashIconContainer);
+  galleryContainer.appendChild(imgContainer);
 }
