@@ -1,4 +1,4 @@
-//Step 2.2: Authentifying a User part 1 
+//Step 2.2: Authentifying a User part 1
 // Define DOM elements
 const loginForm = document.getElementById("loginSubForm");
 const emailInput = document.getElementById("login-email");
@@ -39,6 +39,7 @@ loginButton.addEventListener("click", async function (event) {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("authToken", data.token); // Store the authentication token
+      localStorage.setItem("userId", data.userId); // Store the user ID which is used to identify the user when posting work
       window.location.href = "index.html"; // Redirect to the home page
       // updateNavItem(); // Update the navigation button to "Log Out"
     } else {

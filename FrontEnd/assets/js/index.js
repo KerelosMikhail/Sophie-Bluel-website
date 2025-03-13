@@ -9,6 +9,7 @@ const navItem = document.getElementById("navItem"); // Needed to update the navi
 fetch("http://localhost:5678/api/works")
   .then((response) => response.json())
   .then((data) => {
+    // console.log("works: ", data);
     data.forEach((work) => {
       // Create a new figure element for each work
       createWork(work);
@@ -17,11 +18,15 @@ fetch("http://localhost:5678/api/works")
   .catch((error) => console.error("Error fetching works: ", error));
 
 //Step 1.2: Implementing the Job Filter: Adding Filters to Display Jobs by Category
-// Using fetch to grap the categories from API
 
+let categories = []; // To Reuse it in modal window
+
+// Using fetch to grap the categories from API
 fetch("http://localhost:5678/api/categories")
   .then((response) => response.json())
   .then((data) => {
+    categories = data;
+
     // Create "All" button
     const allButton = document.createElement("button");
     allButton.textContent = "All";
@@ -48,6 +53,7 @@ function createWork(work) {
   const figure = document.createElement("figure");
   figure.classList.add("work");
   figure.setAttribute("data-category", work.categoryId);
+  figure.setAttribute("id", work.id);
 
   // Create an image element
   const img = document.createElement("img");
@@ -173,6 +179,11 @@ function openModal() {
       trashIcon.alt = "Delete";
       trashIcon.classList.add("trash-icon");
 
+      trashIcon.addEventListener("click", function () {
+        const workId = img.closest(".work").getAttribute("id");
+        showDeleteConfirmation(workId, imgContainer);
+      });
+
       trashIconContainer.appendChild(trashIcon);
       imgContainer.appendChild(imgClone);
       imgContainer.appendChild(trashIconContainer);
@@ -244,6 +255,7 @@ function openAddPhotoModal() {
     backButton.alt = "Back";
     backButton.classList.add("back-button");
     backButton.addEventListener("click", function () {
+      clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo); // Clear the image when the back button is clicked
       closeNewModal();
       openModal();
     });
@@ -276,7 +288,7 @@ function openAddPhotoModal() {
 
     const titleLabel = document.createElement("label");
     titleLabel.textContent = "Title";
-    titleLabel.classList.add("form-label");
+    titleLabel.classList.add("form-label-photo");
 
     const titleInput = document.createElement("input");
     titleInput.type = "text";
@@ -284,10 +296,18 @@ function openAddPhotoModal() {
 
     const categoryLabel = document.createElement("label");
     categoryLabel.textContent = "Category";
-    categoryLabel.classList.add("form-label");
+    categoryLabel.classList.add("form-label-photo");
 
     const categoryDropdown = document.createElement("select");
     categoryDropdown.classList.add("dropdown");
+
+    // Populate the dropdown with categories
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.id;
+      option.textContent = category.name;
+      categoryDropdown.appendChild(option);
+    });
 
     const separator = document.createElement("hr");
     separator.classList.add("separator");
@@ -308,7 +328,44 @@ function openAddPhotoModal() {
     newModalContent.appendChild(confirmButton);
     newModal.appendChild(newModalContent);
     document.body.appendChild(newModal);
+
+    // Call the handleFileInput function
+    const fileInputHandler = handleFileInput(addPhotoBtn, imageIcon, rectangle);
+    // for 3.3 Change confirmButton style when titleInput has text
+    titleInput.addEventListener("input", function () {
+      if (titleInput.value) {
+        confirmButton.style.backgroundColor = "#1d6154";
+      } else {
+        confirmButton.style.backgroundColor = "#a7a7a7";
+      }
+    });
+
+    // Add event listener to confirm button
+    confirmButton.addEventListener("click", function () {
+      const selectedImage = fileInputHandler.getSelectedImage(); // Fix for 500 error
+      // Check if the form is correctly filled out
+      if (!selectedImage || !titleInput.value || !categoryDropdown.value) {
+        alert("Please fill out all fields and select an image.");
+        return;
+      }
+
+      // Retrieve the userId and auth token from local storage
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("authToken");
+
+      // Create a FormData object to send the data
+      const formData = new FormData();
+      formData.append("image", selectedImage);
+      formData.append("title", titleInput.value);
+      formData.append("category", categoryDropdown.value);
+      formData.append("userId", userId);
+
+      // Make the API fetch POST call to create a new work
+      createWorkAPI(formData, token);
+    });
   }
+
+  newModal.style.display = "flex";
 
   // Close newModal when clicking outside of it
   newModal.addEventListener("click", function (event) {
@@ -324,4 +381,229 @@ function closeNewModal() {
   if (newModal) {
     newModal.style.display = "none";
   }
+}
+
+//Step 3.2: Deleting Existing Jobs
+// Function to show delete confirmation
+function showDeleteConfirmation(workId, imgContainer) {
+  const confirmationModal = document.createElement("div");
+  confirmationModal.classList.add("modal");
+
+  const confirmationContent = document.createElement("div");
+  confirmationContent.classList.add("modal-content");
+
+  const confirmationText = document.createElement("p");
+  confirmationText.textContent = "Are you sure you want to delete this item?";
+
+  const yesButton = document.createElement("button");
+  yesButton.textContent = "Yes";
+  yesButton.classList.add("confirm-button");
+  yesButton.addEventListener("click", function () {
+    deleteWork(workId, imgContainer, confirmationModal);
+  });
+
+  const noButton = document.createElement("button");
+  noButton.textContent = "No";
+  noButton.classList.add("confirm-button");
+  noButton.addEventListener("click", function () {
+    confirmationModal.style.display = "none";
+  });
+
+  confirmationContent.appendChild(confirmationText);
+  confirmationContent.appendChild(yesButton);
+  confirmationContent.appendChild(noButton);
+  confirmationModal.appendChild(confirmationContent);
+  document.body.appendChild(confirmationModal);
+
+  confirmationModal.style.display = "flex";
+
+  // Close confirmationModal when clicking outside of it
+  confirmationModal.addEventListener("click", function (event) {
+    if (event.target === confirmationModal) {
+      confirmationModal.style.display = "none";
+    }
+  });
+}
+
+// Function to delete work
+function deleteWork(workId, imgContainer, confirmationModal) {
+  // Retrieve the authentication token from local storage
+  const token = localStorage.getItem("authToken");
+
+  if (!token) {
+    alert("Unauthorized: No authentication token found.");
+    return;
+  }
+
+  fetch(`http://localhost:5678/api/works/${workId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.status === 200 || response.status === 204) {
+        // Remove the image container from the modal
+        imgContainer.remove();
+        // Remove the corresponding work element from the gallery
+        const workElement = document.getElementById(workId);
+        if (workElement) {
+          workElement.remove();
+        }
+        confirmationModal.style.display = "none";
+      } else if (response.status === 401) {
+        alert("Unauthorized: You do not have permission to delete this item.");
+      } else if (response.status === 500) {
+        alert("Unexpected Behaviour: Please try again later.");
+      } else {
+        console.error("Error deleting work: ", response.status);
+      }
+    })
+    .catch((error) => console.error("Error deleting work: ", error));
+}
+
+// Function to handle file input and image display for the "Add a photo" modal
+function handleFileInput(addPhotoBtn, imageIcon, rectangle) {
+  // Create a file input element
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/jpeg, image/png";
+  fileInput.style.display = "none";
+
+  let selectedImage = null;
+
+  // Handle file selection
+  fileInput.addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+        alert("File size exceeds 4 MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        imageIcon.src = e.target.result;
+        imageIcon.style.width = "auto";
+        imageIcon.style.height = "100%";
+        imageIcon.style.objectFit = "cover"; // Ensure the image fits within the rectangle
+        selectedImage = file;
+
+        // Remove the existing children of the rectangle and append the imageIcon
+        while (rectangle.firstChild) {
+          rectangle.removeChild(rectangle.firstChild);
+        }
+        rectangle.appendChild(imageIcon);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Trigger file input when addPhotoBtn is clicked
+  addPhotoBtn.addEventListener("click", function () {
+    fileInput.click();
+  });
+
+  // Append the file input to the document body
+  document.body.appendChild(fileInput);
+
+  return {
+    getSelectedImage: () => selectedImage, // fix for null selectedImage
+  };
+}
+
+// Function to clear the selected image incase of back arrow click on the "Add a photo" modal
+function clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo) {
+  imageIcon.src = "./assets/icons/image-regular.svg";
+  imageIcon.style.width = "68.14px";
+  imageIcon.style.height = "59.62px";
+  imageIcon.style.objectFit = "cover";
+
+  // Remove the existing children of the rectangle and append the default imageIcon
+  while (rectangle.firstChild) {
+    rectangle.removeChild(rectangle.firstChild);
+  }
+  rectangle.appendChild(imageIcon);
+  rectangle.appendChild(addPhotoBtn);
+  rectangle.appendChild(photoInfo);
+}
+
+// Step 3.3: Sending a New Project to the Back-End via the Modal Form
+// Function to create a new work via API
+function createWorkAPI(formData, token) {
+  console.log("FormData entries:");
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ": " + pair[1]);
+  }
+
+  return fetch("http://localhost:5678/api/works", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  })
+    .then((response) => {
+      console.log("Response status:", response.status);
+      if (response.status === 201) {
+        return response.json();
+      } else if (response.status === 400) {
+        alert("400 - Bad Request");
+      } else if (response.status === 401) {
+        alert("401 - Unauthorized");
+      } else if (response.status === 500) {
+        alert("500 - Unexpected Error");
+      } else {
+        throw new Error(`Unexpected status code: ${response.status}`);
+      }
+    })
+    .then((newWork) => {
+      if (newWork) {
+        alert("Work created successfully");
+
+        // Step 3.4: Processing the API Response to Dynamically Display the New Image from the Modal
+        // Update the DOM with the new work added to the gallery
+        createWork(newWork);
+
+        // Update the modal content with the new work
+        updateModalContent(newWork);
+
+        // Close the "Add a photo" modal
+        closeNewModal();
+      }
+    })
+    .catch((error) => {
+      console.error("Error creating work:", error);
+    });
+}
+
+// Function to update the modal content with the new work
+function updateModalContent(newWork) {
+  const galleryContainer = document.querySelector(".gallery-container");
+
+  const imgClone = document.createElement("img");
+  imgClone.src = newWork.imageUrl;
+  imgClone.alt = newWork.title;
+  imgClone.classList.add("img-clone");
+
+  const imgContainer = document.createElement("div");
+  imgContainer.classList.add("img-container");
+
+  const trashIconContainer = document.createElement("div");
+  trashIconContainer.classList.add("trash-icon-container");
+
+  const trashIcon = document.createElement("img");
+  trashIcon.src = "./assets/icons/trash-can-solid.png";
+  trashIcon.alt = "Delete";
+  trashIcon.classList.add("trash-icon");
+
+  trashIcon.addEventListener("click", function () {
+    const workId = newWork.id;
+    showDeleteConfirmation(workId, imgContainer);
+  });
+
+  trashIconContainer.appendChild(trashIcon);
+  imgContainer.appendChild(imgClone);
+  imgContainer.appendChild(trashIconContainer);
+  galleryContainer.appendChild(imgContainer);
 }
