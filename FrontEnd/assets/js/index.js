@@ -330,8 +330,7 @@ function openAddPhotoModal() {
     document.body.appendChild(newModal);
 
     // Call the handleFileInput function
-    const selectedImage = handleFileInput(addPhotoBtn, imageIcon, rectangle);
-    console.log("selectedImage: ", selectedImage);
+    const fileInputHandler = handleFileInput(addPhotoBtn, imageIcon, rectangle);
     // for 3.3 Change confirmButton style when titleInput has text
     titleInput.addEventListener("input", function () {
       if (titleInput.value) {
@@ -343,6 +342,7 @@ function openAddPhotoModal() {
 
     // Add event listener to confirm button
     confirmButton.addEventListener("click", function () {
+      const selectedImage = fileInputHandler.getSelectedImage(); // Fix for 500 error
       // Check if the form is correctly filled out
       if (!selectedImage || !titleInput.value || !categoryDropdown.value) {
         alert("Please fill out all fields and select an image.");
@@ -355,11 +355,10 @@ function openAddPhotoModal() {
 
       // Create a FormData object to send the data
       const formData = new FormData();
-      formData.append("imageUrl", selectedImage);
+      formData.append("image", selectedImage);
       formData.append("title", titleInput.value);
-      formData.append("categoryId", categoryDropdown.value);
+      formData.append("category", categoryDropdown.value);
       formData.append("userId", userId);
-      formData.append("id", 20); // for testing
 
       // Make the API fetch POST call to create a new work
       createWorkAPI(formData, token)
@@ -533,7 +532,7 @@ function handleFileInput(addPhotoBtn, imageIcon, rectangle) {
   };
 }
 
-// Function to clear the selected image incase of back arrow click click on the "Add a photo" modal
+// Function to clear the selected image incase of back arrow click on the "Add a photo" modal
 function clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo) {
   imageIcon.src = "./assets/icons/image-regular.svg";
   imageIcon.style.width = "68.14px";
@@ -550,14 +549,25 @@ function clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo) {
 }
 
 // Step 3.3: Sending a New Project to the Back-End via the Modal Form
-
 // Function to create a new work via API
 function createWorkAPI(formData, token) {
+  console.log("FormData entries:");
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ": " + pair[1]);
+  }
+
   return fetch("http://localhost:5678/api/works", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
     },
     body: formData,
-  });
+  })
+    .then((response) => {
+      console.log("Response status:", response.status);
+      return response;
+    })
+    .catch((error) => {
+      console.error("Error creating work:", error);
+    });
 }
