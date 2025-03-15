@@ -227,145 +227,154 @@ function closeModal() {
 
 // Function to open the "Add a photo" modal
 function openAddPhotoModal() {
-  let modal = document.getElementById("modal");
-  if (modal) {
-    modal.style.display = "none";
+  closeModal(); // close the modal when the "Add a photo" button is clicked
+
+  // Remove the existing newModal if it exists
+  let existingModal = document.getElementById("new-modal");
+  if (existingModal) {
+    existingModal.remove();
   }
 
+  // Create a new modal
   let newModal = document.getElementById("new-modal");
-  if (!newModal) {
-    newModal = document.createElement("div");
-    newModal.id = "new-modal";
-    newModal.classList.add("modal");
+  newModal = document.createElement("div");
+  newModal.id = "new-modal";
+  newModal.classList.add("modal");
 
-    const newModalContent = document.createElement("div");
-    newModalContent.classList.add("new-modal-content");
+  const newModalContent = document.createElement("div");
+  newModalContent.classList.add("new-modal-content");
 
-    const closeButton = document.createElement("span");
-    closeButton.textContent = "×";
-    closeButton.classList.add("close-button");
-    closeButton.addEventListener("click", closeNewModal);
+  const closeButton = document.createElement("span");
+  closeButton.textContent = "×";
+  closeButton.classList.add("close-button");
+  closeButton.addEventListener("click", closeNewModal);
 
-    // New back button container
-    const backButtonContainer = document.createElement("div");
-    backButtonContainer.classList.add("back-button-container");
+  // New back button container
+  const backButtonContainer = document.createElement("div");
+  backButtonContainer.classList.add("back-button-container");
 
-    const backButton = document.createElement("img");
-    backButton.src = "./assets/icons/arrow-left-solid.svg";
-    backButton.alt = "Back";
-    backButton.classList.add("back-button");
-    backButton.addEventListener("click", function () {
-      clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo); // Clear the image when the back button is clicked
-      closeNewModal();
-      openModal();
-    });
+  const backButton = document.createElement("img");
+  backButton.src = "./assets/icons/arrow-left-solid.svg";
+  backButton.alt = "Back";
+  backButton.classList.add("back-button");
+  backButton.addEventListener("click", function () {
+    resetAddPhotoModal(
+      imageIcon,
+      rectangle,
+      addPhotoBtn,
+      photoInfo,
+      titleInput,
+      confirmButton
+    ); // reset the "Add a photo" modal when the back button is clicked
+    closeNewModal();
+    openModal();
+  });
 
-    backButtonContainer.appendChild(backButton);
+  backButtonContainer.appendChild(backButton);
 
-    const newModalTitle = document.createElement("h2");
-    newModalTitle.textContent = "Add photo";
-    newModalTitle.classList.add("new-modal-title");
+  const newModalTitle = document.createElement("h2");
+  newModalTitle.textContent = "Add photo";
+  newModalTitle.classList.add("new-modal-title");
 
-    const rectangle = document.createElement("div");
-    rectangle.classList.add("rectangle");
+  const rectangle = document.createElement("div");
+  rectangle.classList.add("rectangle");
 
-    const imageIcon = document.createElement("img");
-    imageIcon.src = "./assets/icons/image-regular.svg";
-    imageIcon.alt = "Image";
-    imageIcon.classList.add("image-icon");
+  const imageIcon = document.createElement("img");
+  imageIcon.src = "./assets/icons/image-regular.svg";
+  imageIcon.alt = "Image";
+  imageIcon.classList.add("image-icon");
 
-    const addPhotoBtn = document.createElement("button");
-    addPhotoBtn.textContent = "+ Add photo";
-    addPhotoBtn.classList.add("add-photo-btn");
+  const addPhotoBtn = document.createElement("button");
+  addPhotoBtn.textContent = "+ Add photo";
+  addPhotoBtn.classList.add("add-photo-btn");
 
-    const photoInfo = document.createElement("span");
-    photoInfo.textContent = "jpg, png: max 4 MB";
-    photoInfo.classList.add("photo-info");
+  const photoInfo = document.createElement("span");
+  photoInfo.textContent = "jpg, png: max 4 MB";
+  photoInfo.classList.add("photo-info");
 
-    rectangle.appendChild(imageIcon);
-    rectangle.appendChild(addPhotoBtn);
-    rectangle.appendChild(photoInfo);
+  rectangle.appendChild(imageIcon);
+  rectangle.appendChild(addPhotoBtn);
+  rectangle.appendChild(photoInfo);
 
-    const titleLabel = document.createElement("label");
-    titleLabel.textContent = "Title";
-    titleLabel.classList.add("form-label-photo");
+  const titleLabel = document.createElement("label");
+  titleLabel.textContent = "Title";
+  titleLabel.classList.add("form-label-photo");
 
-    const titleInput = document.createElement("input");
-    titleInput.type = "text";
-    titleInput.classList.add("input-box");
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.classList.add("input-box");
 
-    const categoryLabel = document.createElement("label");
-    categoryLabel.textContent = "Category";
-    categoryLabel.classList.add("form-label-photo");
+  const categoryLabel = document.createElement("label");
+  categoryLabel.textContent = "Category";
+  categoryLabel.classList.add("form-label-photo");
 
-    const categoryDropdown = document.createElement("select");
-    categoryDropdown.classList.add("dropdown");
+  const categoryDropdown = document.createElement("select");
+  categoryDropdown.classList.add("dropdown");
 
-    // Populate the dropdown with categories
-    categories.forEach((category) => {
-      const option = document.createElement("option");
-      option.value = category.id;
-      option.textContent = category.name;
-      categoryDropdown.appendChild(option);
-    });
+  // Populate the dropdown with categories
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.textContent = category.name;
+    categoryDropdown.appendChild(option);
+  });
 
-    const separator = document.createElement("hr");
-    separator.classList.add("separator");
+  const separator = document.createElement("hr");
+  separator.classList.add("separator");
 
-    const confirmButton = document.createElement("button");
-    confirmButton.textContent = "Confirm";
-    confirmButton.classList.add("confirm-button");
+  const confirmButton = document.createElement("button");
+  confirmButton.textContent = "Confirm";
+  confirmButton.classList.add("confirm-button");
 
-    newModalContent.appendChild(closeButton);
-    newModalContent.appendChild(backButtonContainer);
-    newModalContent.appendChild(newModalTitle);
-    newModalContent.appendChild(rectangle);
-    newModalContent.appendChild(titleLabel);
-    newModalContent.appendChild(titleInput);
-    newModalContent.appendChild(categoryLabel);
-    newModalContent.appendChild(categoryDropdown);
-    newModalContent.appendChild(separator);
-    newModalContent.appendChild(confirmButton);
-    newModal.appendChild(newModalContent);
-    document.body.appendChild(newModal);
+  newModalContent.appendChild(closeButton);
+  newModalContent.appendChild(backButtonContainer);
+  newModalContent.appendChild(newModalTitle);
+  newModalContent.appendChild(rectangle);
+  newModalContent.appendChild(titleLabel);
+  newModalContent.appendChild(titleInput);
+  newModalContent.appendChild(categoryLabel);
+  newModalContent.appendChild(categoryDropdown);
+  newModalContent.appendChild(separator);
+  newModalContent.appendChild(confirmButton);
+  newModal.appendChild(newModalContent);
+  document.body.appendChild(newModal);
 
-    // Call the handleFileInput function
-    const fileInputHandler = handleFileInput(addPhotoBtn, imageIcon, rectangle);
-    // for 3.3 Change confirmButton style when titleInput has text
-    titleInput.addEventListener("input", function () {
-      if (titleInput.value) {
-        confirmButton.style.backgroundColor = "#1d6154";
-      } else {
-        confirmButton.style.backgroundColor = "#a7a7a7";
-      }
-    });
+  // Call the handleFileInput function
+  const fileInputHandler = handleFileInput(addPhotoBtn, imageIcon, rectangle);
+  // for 3.3 Change confirmButton style when titleInput has text
+  titleInput.addEventListener("input", function () {
+    if (titleInput.value) {
+      confirmButton.style.backgroundColor = "#1d6154";
+    } else {
+      confirmButton.style.backgroundColor = "#a7a7a7";
+    }
+  });
 
-    // Add event listener to confirm button
-    confirmButton.addEventListener("click", function () {
-      const selectedImage = fileInputHandler.getSelectedImage(); // Fix for 500 error
-      // Check if the form is correctly filled out
-      if (!selectedImage || !titleInput.value || !categoryDropdown.value) {
-        alert("Please fill out all fields and select an image.");
-        return;
-      }
+  // Add event listener to confirm button
+  confirmButton.addEventListener("click", function () {
+    const selectedImage = fileInputHandler.getSelectedImage(); // Fix for 500 error
+    // Check if the form is correctly filled out
+    if (!selectedImage || !titleInput.value || !categoryDropdown.value) {
+      alert("Please fill out all fields and select an image.");
+      return;
+    }
 
-      // Retrieve the userId and auth token from local storage
-      const userId = localStorage.getItem("userId");
-      const token = localStorage.getItem("authToken");
+    // Retrieve the userId and auth token from local storage
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("authToken");
 
-      // Create a FormData object to send the data
-      const formData = new FormData();
-      formData.append("image", selectedImage);
-      formData.append("title", titleInput.value);
-      formData.append("category", categoryDropdown.value);
-      formData.append("userId", userId);
+    // Create a FormData object to send the data
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+    formData.append("title", titleInput.value);
+    formData.append("category", categoryDropdown.value);
+    formData.append("userId", userId);
 
-      // Make the API fetch POST call to create a new work
-      createWorkAPI(formData, token);
-    });
-  }
+    // Make the API fetch POST call to create a new work
+    createWorkAPI(formData, token);
+  });
 
-  newModal.style.display = "flex";
+  newModal.style.display = "flex"; // Ensure the modal is displayed
 
   // Close newModal when clicking outside of it
   newModal.addEventListener("click", function (event) {
@@ -512,8 +521,18 @@ function handleFileInput(addPhotoBtn, imageIcon, rectangle) {
   };
 }
 
-// Function to clear the selected image incase of back arrow click on the "Add a photo" modal
-function clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo) {
+// Function to reset the "Add a photo" modal
+function resetAddPhotoModal(
+  imageIcon,
+  rectangle,
+  addPhotoBtn,
+  photoInfo,
+  titleInput,
+  confirmButton
+) {
+  titleInput.value = ""; // Clear the title input
+  titleInput.textContent = ""; // Clear the title input
+
   imageIcon.src = "./assets/icons/image-regular.svg";
   imageIcon.style.width = "68.14px";
   imageIcon.style.height = "59.62px";
@@ -526,6 +545,9 @@ function clearImage(imageIcon, rectangle, addPhotoBtn, photoInfo) {
   rectangle.appendChild(imageIcon);
   rectangle.appendChild(addPhotoBtn);
   rectangle.appendChild(photoInfo);
+
+  // Reset the confirm button to default color
+  confirmButton.style.backgroundColor = "#a7a7a7";
 }
 
 // Step 3.3: Sending a New Project to the Back-End via the Modal Form
