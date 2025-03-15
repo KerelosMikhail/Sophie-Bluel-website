@@ -373,18 +373,6 @@ function openAddPhotoModal() {
     // Make the API fetch POST call to create a new work
     createWorkAPI(formData, token);
   });
-  // } else {
-  //   newModal.style.display = "flex"; // Ensure the modal is displayed
-
-  //   // Reset the modal when the "Add a photo" button is clicked
-  //   resetAddPhotoModal(
-  //     imageIcon,
-  //     rectangle,
-  //     addPhotoBtn,
-  //     photoInfo,
-  //     titleInput,
-  //     confirmButton
-  //   );
 
   newModal.style.display = "flex"; // Ensure the modal is displayed
 

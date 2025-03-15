@@ -40,10 +40,14 @@ loginButton.addEventListener("click", async function (event) {
       const data = await response.json();
       localStorage.setItem("authToken", data.token); // Store the authentication token
       localStorage.setItem("userId", data.userId); // Store the user ID which is used to identify the user when posting work
+      alert(`Welcome back, ${email}!`); // Show welcome message
       window.location.href = "index.html"; // Redirect to the home page
-      // updateNavItem(); // Update the navigation button to "Log Out"
+    } else if (response.status === 401) {
+      showError("Not Authorized: Incorrect email or password"); // Show error message for incorrect credentials
+    } else if (response.status === 404) {
+      showError("User not found"); // Show error message for user not found
     } else {
-      showError("Incorrect email or password"); // Show error message for incorrect credentials
+      showError("An error occurred. Please try again later."); // Show error message for any other errors
     }
   } catch (error) {
     showError("An error occurred. Please try again later."); // Show error message for any other errors
