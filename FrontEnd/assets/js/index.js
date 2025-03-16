@@ -7,9 +7,16 @@ const navItem = document.getElementById("navItem"); // Needed to update the navi
 // Using fetch to grap the work from API
 
 fetch("http://localhost:5678/api/works")
-  .then((response) => response.json())
+  .then((response) => {
+    if (response.status === 500) {
+      throw new Error("500 - Unexpected Error");
+    } else if (response.status === 200) {
+      return response.json();
+    } else {
+      throw new Error(`Unexpected status code: ${response.status}`);
+    }
+  })
   .then((data) => {
-    // console.log("works: ", data);
     data.forEach((work) => {
       // Create a new figure element for each work
       createWork(work);
@@ -23,7 +30,15 @@ let categories = []; // To Reuse it in modal window
 
 // Using fetch to grap the categories from API
 fetch("http://localhost:5678/api/categories")
-  .then((response) => response.json())
+  .then((response) => {
+    if (response.status === 500) {
+      throw new Error("500 - Unexpected Error");
+    } else if (response.status === 200) {
+      return response.json();
+    } else {
+      throw new Error(`Unexpected status code: ${response.status}`);
+    }
+  })
   .then((data) => {
     categories = data;
 
